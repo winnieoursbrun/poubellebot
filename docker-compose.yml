@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  redhousebot:
+    image: redhousebot
+    build:
+      context: .
+      dockerfile: ./Dockerfile
