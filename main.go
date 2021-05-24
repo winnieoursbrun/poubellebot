@@ -21,11 +21,18 @@ var (
 
 func init() {
 
-	flag.StringVar(&Token, "t", "", "Bot Token DISCORD_TOKEN")
-	flag.StringVar(&ChannelID, "c", "", "Channel ID")
+	flag.StringVar(&Token, "t", "", "Bot Token | DISCORD_TOKEN")
+	flag.StringVar(&ChannelID, "c", "", "Channel ID | DISCORD_CHANNEL_ID")
 	flag.Parse()
 
-	if (Token == "" && os.Getenv("DISCORD_TOKEN") == "") || (ChannelID == "" && os.Getenv("DISCORD_CHANNEL_ID") == "") {
+	if Token == "" {
+		Token = os.Getenv("DISCORD_TOKEN")
+	}
+	if ChannelID == "" {
+		ChannelID = os.Getenv("DISCORD_CHANNEL_ID")
+	}
+
+	if Token == "" || ChannelID == "" {
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -113,5 +120,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	fmt.Println(m.ChannelID)
+	switch m.Content {
+	case "!bot getChannelID":
+		s.ChannelMessageSend(m.ChannelID, m.ChannelID)
+	default:
+		return
+	}
 }
